@@ -7,8 +7,11 @@ from scoreboard import Scoreboard
 def end_game():
   game_is_on = False
 
+SCREEN_WIDTH = 600
+SCREEN_HEIGHT = 600
+
 screen = Screen()
-screen.setup(width=600, height=600)
+screen.setup(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
 screen.bgcolor('black')
 screen.title('My snake game')
 screen.tracer(0)
@@ -25,18 +28,16 @@ screen.onkey(snake.left, 'Left')
 screen.onkey(snake.right, 'Right')
 screen.onkey(end_game, 'w')
 
-
-x_boundary = [-280,280]
-y_boundary = [-280,280]
-
 game_is_on = True
 
 def end_game():
   game_is_on = False
 
+TIME_DELAY = 0.1
+
 while game_is_on:
   screen.update()
-  time.sleep(0.1)
+  time.sleep(TIME_DELAY)
   snake.move()
 
   # detect collision with food
@@ -45,16 +46,19 @@ while game_is_on:
     snake.extend()
     scoreboard.increase_score()
     scoreboard.display_score()
+    TIME_DELAY *= 0.95
 
   # detect collision with wall
   if snake.head.xcor() > 280 or snake.head.xcor() < -280 or snake.head.ycor() > 280 or snake.head.ycor() < -280:
     scoreboard.reset()
     snake.reset()
+    TIME_DELAY = 0.1
 
   # detect collision with tail
   for segment in snake.segments[1:]:
     if snake.head.distance(segment.position()) < 10:
       scoreboard.reset()
       snake.reset()
+      TIME_DELAY = 0.1
 
 screen.exitonclick()
